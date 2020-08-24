@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="./font-awesome-4.7.0/css/font-awesome.min.css">
+    <!-- <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"> -->
+
+</head>
+
+<body>
+    <div id="app">
+        <button @click="count++">{{ count }}</button>
+        <navigation-link url="/profile">
+            <span class="fa fa-user fa-spin"></span>
+            <span class="fa fa-camera-retro fa-5x"></span>
+            <span class="fa fa-eercast fa-2x fa-spin"></span>
+            <span class="fa fa-eercast fa-3x fa-spin"></span>
+            <i class="fa fa-user" aria-hidden="true"></i>
+            <i class="fa fa-facebook" aria-hidden="true"></i>
+            Your Profile
+            <font-awesome name="user"></font-awesome>
+        </navigation-link>
+        <br>
+        <navigation-link url="/Profile">
+            Login in as : {{ user.name }}<br>
+            Login in as : {{ user.url }}
+            <!--无效-->
+        </navigation-link>
+        <br>
+        <submit-button></submit-button>
+        <submit-button>Save</submit-button>
+        <base-layout>
+            <template v-slot:header>
+                <h1>Here might be a page</h1>
+            </template>
+            <p>A parageaph for the main content</p>
+            <p>And other one</p>
+
+            <template v-slot:footer>
+                <p>Here's some contact info</p>
+            </template>
+        </base-layout>
+        <base-layout>
+            <template v-slot:header>
+                <h1>Here might be a page</h1>
+            </template>
+            <template v-slot:default>
+                <p>A parageaph for the main content</p>
+                <p>And other one</p>
+            </template>
+
+            <template v-slot:footer>
+                <p>Here's some contact info</p>
+            </template>
+        </base-layout>
+        <hr>
+        <base-layout>
+            <template #header>
+                <h1>Here might be a page</h1>
+            </template>
+            <template #default>
+                <p>A parageaph for the main content</p>
+                <p>And other one</p>
+            </template>
+
+            <template #footer>
+                <p>Here's some contact info</p>
+            </template>
+        </base-layout>
+        <br>
+        <!-- <current-user>
+            {{ user.firstName }}
+        </current-user> -->
+        <!-- <current-user>
+            <template v-slot:default="slotProps">
+                {{ slotProps.user.firstName }}
+            </template>
+        </current-user> -->
+        <!-- <current-user v-slot="{ user }">
+            {{ user.firstName }}
+        </current-user> -->
+        <todo-list v-bind:todos="todos">
+            <template v-slot:todo="{todo}">
+                <span v-if="todo.isComplete"></span>
+                {{ todo.text }}
+            </template>
+        </todo-list>
+    </div>
+    <script>
+        Vue.component('navigation-link', {
+            props: ["url"],
+            template: `
+            <div>
+                <a
+                    v-bind:href="url"
+                    class="nav-link"
+                ></a>
+                <slot></slot>
+            </div>
+            `
+        })
+        Vue.component('font-awesome', {
+            props: ['name'],
+            template: `
+            <i class="fa fa-user fa-spin">{{name}}</i>
+            `
+        })
+        Vue.component('submit-button', {
+            props: [],
+            template: `
+                <button>
+                    <slot>Submit</slot>
+                </button>
+            `
+        })
+        Vue.component('base-layout', {
+            props: [],
+            template: `
+                <div>
+                    <header>
+                        <slot name="header"></slot>
+                    </header>
+                    <main>
+                        <slot></slot>
+                    </main>
+                    <footer>
+                        <slot name="footer"></slot>
+                    </footer>
+                </div>
+            `
+        })
+        Vue.component('current-user', {
+            props: [],
+            template: `
+                <span>
+                    <slot v-bind:user="user">{{ user.lastName }}</slot>
+                </span>
+            `
+        })
+        Vue.component('todo-list', {
+            template: `
+                <ul>
+                    <li
+                        v-for="todo in todo"
+                        v-bind:key="todo.id"
+                        >
+                    <slot name="todo" v-bind:todo="todo">
+                        {{ todo.text }}
+                    </slot>
+                    </li>
+                </ul>
+            `
+        })
+        new Vue({
+            el: "#app",
+            data() {
+                return {
+                    count: 0,
+                    user: {
+                        name: "Ygj",
+                        firstName: "First:Y",
+                        lastName: "Last:gj",
+                        slotProps: "slotProps~~~"
+                    },
+                    todos: [
+                        { id: 1, text: "AAAA", isComplete: false },
+                        { id: 2, text: "BBBB", isComplete: true },
+                        { id: 3, text: "CCCC", isComplete: true },
+                        { id: 4, text: "DDDD", isComplete: false },
+                    ],
+                    filteredTodos: [
+                        { id: 1, text: "AAAA", isComplete: false },
+                        { id: 2, text: "BBBB", isComplete: true },
+                        { id: 3, text: "CCCC", isComplete: true },
+                        { id: 4, text: "DDDD", isComplete: false },
+                    ]
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>

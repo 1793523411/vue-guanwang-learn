@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.delivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <blog-post title="My journey with Vue"></blog-post>
+        <blog-post :title="title"></blog-post>
+        <blog-post2 postTitle="渲染不出来"></blog-post2>
+        <blog-post2 post-title="可以渲染出来"></blog-post2>
+        <!-- <demo v-bind:likes="post.likes" is-published></demo>
+        <demo v-bind:likes="post.likes" v-bind:is-published="false"></demo>
+        <demo v-bind:likes="post.likes" v-bind:is-published="post.isPublished"></demo>
+        <demo v-bind:likes="post.likes" v-bind:comment-ids="[22,33,44]"></demo>
+        <demo v-bind:likes="post.likes" v-bind:comment-ids="post.commentIds"></demo> -->
+        <demo v-bind:likes="post.likes" v-bind:author="post.author"></demo>
+        <demo v-bind:likes="post.likes" v-bind:author="{
+            name:'Veronica',
+            age: 10
+        }"></demo>
+        <demo v-bind:likes="post.likes" v-bind:author="post.author"></demo>
+        <demo v-bind:likes="post.likes" v-bind:author="{
+            name:'Veronica',
+            age: '10'
+        }"></demo>
+        <hr>
+        <demo v-bind="post"></demo>
+        <!-- <demo :post="post"></demo>XXXXXXX -->
+    </div>
+    <script>
+        Vue.component('demo', {
+            props: {
+                title: String,
+                likes: Number,
+                isPublished: Boolean,
+                commentIds: Array,
+                author: {name:String,age:Number},
+                author2: Object,
+                callback: Function,
+                contactsPromise: Promise
+            },
+            template:`
+            <div>
+                <div>{{ likes }}</div>
+                <div>{{ isPublished }}</div>
+                <div>{{ commentIds }}</div>
+                <div>{{ author.name }}+{{ author.age }}</div>
+            </div>
+            `
+        })
+        Vue.component('demo2', {
+            props: {
+                title: String,
+                likes: Number,
+                isPublished: Boolean,
+                commentIds: Array,
+                author: {name:String,age:Number},
+                author2: Object,
+                callback: Function,
+                contactsPromise: Promise
+            },
+            template:`
+            <div>
+                <div>{{ post.likes }}</div>
+                <div>{{ post.isPublished }}</div>
+                <div>{{ post.commentIds }}</div>
+                <div>{{ post.author.name }}+{{ post.author.age }}</div>
+            </div>
+            `
+        })
+        Vue.component('blog-post', {
+            props: ["title"],
+            template: `<h1>{{ title }}</h1>`
+        })
+        Vue.component('blog-post2', {
+            props: ["postTitle"],
+            template: `<h2>{{ postTitle }}</h2>`
+        })
+        var vm = new Vue({
+            el: "#app",
+            data() {
+                return {
+                    title: "这是一个title",
+                    post: {
+                        title: "title",
+                        likes: 5,
+                        isPublished: true,
+                        commentIds: [1,2,3,4],
+                        author: {name:"ygj",age:12},
+                        callback: function(){console.log(Hello)},
+                        contactsPromise: 'Promise'
+                    }
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>

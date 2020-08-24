@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        .sty {
+            color: blueviolet
+        }
+    </style>
+</head>
+
+<body>
+    <ul id="example-1">
+        <li v-for="item in items" :key="item.message">
+            {{ item.message }}
+        </li>
+        <li v-for="item of items">
+            {{ item.message }}
+        </li>
+    </ul>
+    <ul id="example-2">
+        <li v-for="(item, index) in items">
+            {{ parentMessage }} - {{ index }} - {{item.message}}
+        </li>
+    </ul>
+    <ul id="v-for-object">
+        <li v-for="value in object">
+            {{ value }}
+        </li>
+        <div v-for="(value, name) in object">
+            {{ name }} : {{ value }}
+        </div>
+        <br>
+        <div v-for="(value, name ,index) in object">
+            {{index}} : {{ name }} : {{ value }}
+        </div>
+        <br>
+        <div v-for="(index, value ,name) in object" :key="index">
+            {{index}} : {{ name }} : {{ value }}
+        </div>
+    </ul>
+    <div id="compute">
+        <li v-for="n in eventNumbers">{{ n }}</li>
+        <ul v-for="set in sets">
+            <li v-for="n in even(set)"> {{ n }}</li>
+        </ul>
+        <div>
+            <span v-for="n in 10">{{ n }}</span>
+        </div>
+        <ul>
+            <template v-for="item in items">
+                <li :style="sty2">{{ item.msg }}</li>
+                <li :class="divider" role="presentation">aaa</li>
+                <div role="button">hahah</div>
+            </template>
+        </ul>
+    </div>
+    <div id="for_if">
+        <li v-for="todo in todos" v-if="!todo.isComplete">
+            {{todo.isComplete}}------{{todo.thing}}
+        </li>
+        <ul v-if="todos.length">
+            <li v-for="todo in todos">
+                {{todo.isComplete}}------{{todo.thing}}
+            </li>
+        </ul>
+        <p v-else>No todos left!</p>
+    </div>
+    <div id="app">
+        <my-component
+            v-for="(item, index) in items"
+            v-bind:item="item"
+            v-bind:index="index"
+            v-bind:key="item.id"
+        ></my-component>
+    </div>
+
+        <div id="todo-list-example">
+            <form action="" @submit.prevent="addNewTodo">
+                <label for="new-todo">Add a todo</label>
+                <input 
+                type="text"
+                v-model="newTodoText"
+                placeholder="E.g.Feed the cat"
+                >
+                <button>Add</button>
+            </form>
+            <ul>
+                <li
+                is="todo-item"
+                v-for="(todo, index) in todos"
+                :key="todo.id"
+                :title="todo.title"
+                @remove="todos.splice(index, 1)"
+                ></li>
+            </ul>
+        </div>
+    <script>
+        var example1 = new Vue({
+            el: "#example-1",
+            data: {
+                items: [
+                    { message: 'Foo' },
+                    { message: 'Bar' }
+                ]
+            }
+        })
+        console.log(example1.items)
+        //当使用非变更方法时可以用新数组替换旧数组
+        example1.items = example1.items.filter(function (item) {
+            return item.message.match(/Foo/)
+        })
+        console.log(example1.items)
+        new Vue({
+            el: "#example-2",
+            data: {
+                parentMessage: 'Parent',
+                items: [
+                    { message: 'Foo' },
+                    { message: 'Bar' }
+                ],
+            }
+        })
+        new Vue({
+            el: "#v-for-object",
+            data: {
+                object: {
+                    title: 'How to do lists in Vue',
+                    author: 'Jane Doe',
+                    publishedAt: '2016-04-10'
+                }
+            }
+        })
+        new Vue({
+            el: "#compute",
+            data: {
+                numbers: [1, 2, 3, 4, 5],
+                sets: [[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]],
+                items: [
+                    { msg: 'Foo' },
+                    { msg: 'Bar' }
+                ],
+                divider: "sty",
+                sty2: {
+                    color: 'red',
+                }
+            },
+            methods: {
+                even: function (numbers) {
+                    return numbers.filter(function (number) {
+                        return number % 2 === 0
+                    })
+                }
+            },
+            computed: {
+                eventNumbers: function () {
+                    return this.numbers.filter(function (number) {
+                        return number % 2 === 0
+                    })
+                }
+            },
+        })
+        new Vue({
+            el: "#for_if",
+            data: {
+                todos: [
+                    { thing: "A", isComplete: false },
+                    { thing: "B", isComplete: true },
+                    { thing: "C", isComplete: true },
+                    { thing: "D", isComplete: false },
+                ]
+            }
+        })
+        new Vue({
+            el: "#app",
+            data: {
+                items:[]
+            }
+        })
+        Vue.component('todo-item', {
+            template: `
+                <li>
+                    {{ title }}
+                    <button @click="$emit('remove')">Remove</button>
+                </li>
+            `,
+            props: ['title']
+        })
+        new Vue({
+            el: "#todo-list-example",
+            data: {
+                newTodoText: '',
+                todos: [
+                    {
+                        id :1,
+                        title: 'Do the dishes',
+                    },
+                    {
+                        id :2,
+                        title: 'Take out the trash',
+                    },
+                    {
+                        id :3,
+                        title: 'Mow the lawn',
+                    }
+                ],
+                nextTodoId: 4
+            },
+            methods: {
+                addNewTodo: function() {
+                    this.todos.push({
+                        id: this.nextTodoId++,
+                        title: this.newTodoText
+                    })
+                    this.newTodoText = ''
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

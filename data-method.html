@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <p>{{ foo }}</p>
+        <!--点击不会发生变化-->
+        <button v-on:click="foo = 'baz'">Change it</button>
+    </div>
+    <div id="example">
+        <p>{{ a }}</p>
+        <button v-on:click=" a++">触发watch方法</button>
+    </div>
+
+    <script>
+        /*
+        
+                var data = {a:1}
+        
+                var vm = new Vue({
+                    data: data,
+                    newTodoText: '',//设置一些初始值
+                    visitCount:0,
+                    todo: []
+                })
+        
+                console.log(vm.a == data.a) //=>true
+                vm.a = 2
+                console.log(data.a)
+        
+                vm.b = 'Hi' //不是响应式的
+                console.log(vm.b)
+                vm.b = 'Hi~~~~' //不是响应式的
+                console.log(vm.b)
+        */
+
+        
+              var obj = {
+                foo: "bar",
+              };
+              Object.freeze(obj); //阻止现有的property，意味着相应系统无法在追踪变化
+              new Vue({
+                el: "#app",
+                data: obj,
+              });
+        
+
+        var data = { a: 1 };
+        var vm = new Vue({
+            el: '#example',
+            data: data
+        });
+        console.log(vm.$data === data)
+
+        console.log(vm.$el === document.getElementById('example'))
+
+        vm.$watch('a', function (newValue, oldValue) {
+            console.log("a发生了改变"+vm.a)
+        })
+    </script>
+</body>
+
+</html>

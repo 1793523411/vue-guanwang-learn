@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- <link rel="stylesheet" href="https://www.jsdelivr.com/package/npm/bootstrap"> -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div id="app">
+        <demo initial-counter="12"></demo>
+        <hr>
+        <demo2 size="   aAAA"></demo2>
+        <hr>
+        <my-component v-bind:prop-a="123"></my-component>
+        <hr>
+        <my-component v-bind:prop-a="num"></my-component>
+        <hr>
+        <my-component v-bind:prop-b="'sadasf'"></my-component>
+        <hr>
+        <my-component v-bind:prop-b="456"></my-component>
+        <hr>
+        <my-component v-bind:prop-c="'asdfghjkl'"></my-component>
+        <hr>
+        <!-- <my-component v-bind:prop-c="456456"></my-component> -->
+        <hr>
+        <my-component v-bind:prop-d="123456"></my-component>
+        <hr>
+        <my-component v-bind:prop-e="{message:'waoo!'}"></my-component>
+        <hr>
+        <my-component v-bind:prop-f="'success'"></my-component>
+        <hr>
+        <!-- <my-component v-bind:prop-f="'successaaaa'"></my-component> -->
+        <!-- 当 prop 验证失败的时候，(开发环境构建版本的) Vue 将会产生一个控制台的警告。 -->
+        <fun v-bind:prop-G="per"></fun>
+        <!-- <fun v-bind:prop-G="per.firstName"></fun> -->
+        <!-- <div class="col-md-3">abcdefg</div>
+        <div class="col-md-3">abcdefg</div>
+        <div class="col-md-3">abcdefg</div>
+        <div class="col-md-3">abcdefg</div> -->
+        <bootstrap-date-input data-date-picker="activated" class="date-picker-theme-dark"></bootstrap-date-input>
+        <bootstrap-date-input data-date-picker="activated" class="date-picker-theme-dark" type="text"
+            placeholder='Enter your username'></bootstrap-date-input>
+        <!--type会发生覆盖，绝大多数 attribute 来说都会覆盖，而class和style会被合并-->
+        <bootstrap-date-input2 data-date-picker="activated" class="date-picker-theme-dark" type="text">
+        </bootstrap-date-input2>
+        <base-input v-model="username" require placeholder="Enter your username" label="username!!!"></base-input>
+    </div>
+    <script>
+        function Proson(firstName, lastName) {
+            this.firstName = firstName
+            this.lastName = lastName
+        }
+        Vue.component('demo', {
+            props: ['initialCounter'],
+            data: function () {
+                return {
+                    counter: this.initialCounter
+                }
+            },
+            template: `
+            <div>
+                <div>{{ initialCounter }}</div>
+            </div>
+            `
+        })
+        Vue.component('demo2', {
+            props: ['size'],
+            data: function () {
+                return {}
+            },
+            computed: {
+                normalizedSize: function () {
+                    return this.size.trim().toLowerCase()
+                }
+            },
+            template: `
+            <div>
+                <!--<div>{{ size }}</div>-->
+                <div>{{ normalizedSize }}</div>
+            </div>
+            `
+        })
+        Vue.component('my-component', {
+            //prop会在组件实例创建前进行验证，所以实例中的property在default和validator中不可用
+            props: {
+                propA: Number,
+                propB: [String, Number],
+                //必填的字符串
+                propC: {
+                    type: String,
+                    require: true
+                },
+                propD: {
+                    type: Number,
+                    default: 100,
+                },
+                propE: {
+                    type: Object,
+                    default: function () {
+                        return { message: 'Hello' }
+                    }
+                },
+                propF: {
+                    validator: function (value) {
+                        return ['success', 'waring', 'danger'].indexOf(value) !== -1
+                    }
+                },
+            },
+            template: `
+                <div>
+                    <div>{{ propA }}</div>
+                    <div>{{ propB }}</div>
+                    <div>{{ propC }}</div>
+                    <div>{{ propD }}</div>
+                    <div>{{ propE.message }}</div>
+                    <div>{{ propF }}</div>
+                </div>
+            `
+        })
+        Vue.component('fun', {
+            props: {
+                propG: Proson
+            },
+            template: `
+                <div>
+                    <div>{{ propG }}</div>
+                    <div>{{ propG.firstName }}</div>
+                    <div>{{ propG.lastName }}</div>
+                </div>
+            `
+        })
+        Vue.component('bootstrap-date-input', {
+            template: `
+                <input type="date" class="form-control">
+            `
+        })
+        Vue.component('bootstrap-date-input2', {
+            //inherit:继承，作用取消覆盖
+            inheritAttrs: false,
+            template: `
+            <div>
+                <input type="date" class="form-control" v-bind:type="$attrs.type">
+                <input type="date" class="form-control" >
+            </div>
+            `
+        })
+        Vue.component('base-input', {
+            //inherit:继承，作用取消覆盖
+            inheritAttrs: false,
+            props: ['label', 'value'],
+            // 有了 inheritAttrs: false 和 $attrs，你就可以手动决定这些 attribute 会被赋予哪个元素。在撰写基础组件的时候是常会用到的
+            template: `
+                <label>
+                {{ label }}
+                <input v-bind="$attrs" v-bind:value="value" v-on:input="$emit('input',$event.target.value)">
+                </label>
+            `
+        })
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                num: 123,
+                per: new Proson('ygj', 'hhh'),
+                username: '',
+                // required: true,
+                // placeholder: 'Enter your username'
+            }
+        })
+    </script>
+    <style>
+        .date-picker-theme-dark {
+            color: aqua;
+        }
+    </style>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        {{value | capitalize|demo}}
+        <div v-bind:id="value|capitalize"></div>
+    </div>
+    <script>
+        Vue.filter('demo', function (value) {
+            return value + "全局注册过滤器"
+        })
+        new Vue({
+            el: "#app",
+            data: {
+                value: 'ashguaih'
+            },
+            filters: {
+                capitalize: function (value) {
+                    if (!value) return ''
+                    value = value.toString()
+                    return value.charAt(0).toUpperCase() + value.slice(1)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

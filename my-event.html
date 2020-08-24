@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <base-checkbox v-model="lovingVue"></base-checkbox>
+        <base-input2 v-model="msg2" v-on:focus.native="onFocus" label=".native"></base-input2>
+        <base-input v-model="msg" label="username"></base-input>
+        <text-document
+            v-bind:value="doc.title"
+            v-on:update:value="doc.title=$event"
+        ></text-document>
+        <text-document v-bind:value.sync="doc.title"></text-document>
+    </div>
+    <script>
+        Vue.component('base-checkbox',{
+            props:{
+                checked: Boolean
+            },
+            model: {
+                prop: 'checked',
+                event: 'change'
+            },
+            template: `
+                <div>
+                    <input type="checkbox" v-bind:checked="checked" v-on:change="$emit('change',$event.target.checked)">
+                </div>
+            `
+        })
+        Vue.component('base-input2',{
+            props:['label','value'],
+            model: {
+                prop: 'value',
+                event: 'input'
+            },
+            methods:{
+                onFocus: function(){
+                    console.log('hahah')
+                }
+            },
+            template: `
+            <label>
+            {{ label }}
+            <input
+                v-bind="$attrs"
+                v-bind:value="value"
+                v-on:input="$emit('input', $event.target.value)"
+            >
+            </label>
+            `
+        })
+        Vue.component('base-input',{
+            inheritAttrs: false,
+            props:['label','value'],
+            computed: {
+                inputListeners: function(){
+                    var vm = this
+                    return Object.assign({},
+                        this.$listeners,
+                        {
+                            input: function(event){
+                                vm.$emit('input',event.target.value)
+                            },
+                            focus: function(event){
+                                console.log("focus")
+                            }
+                        }
+                    )
+                }
+            },
+            template: `
+            <label>
+                {{ label }}
+                <input
+                    v-bind="$attrs"
+                    v-bind:value="value"
+                    v-on="inputListeners"
+                >
+            </label>
+            `
+        })
+        Vue.component('text-document',{
+            props:['value'],
+            template: `
+            <label>
+                <input
+                    v-bind="$attrs"
+                    v-bind:value="value"
+                    v-on:input="$emit('input', $event.target.value)"
+                >
+            </label>
+            `
+        })
+        var vm2 = new Vue({
+            el: "#app",
+            data() {
+                return {
+                    lovingVue:false,
+                    msg: '',
+                    msg2: '',
+                    doc: {
+                        title:"Title"
+                    }
+                }
+            },
+            methods: {
+                onFocus: function(){
+                    console.log('hahah')
+                }
+            },
+        })
+    </script>
+</body>
+</html>

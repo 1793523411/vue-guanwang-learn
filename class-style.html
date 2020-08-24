@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        .active {
+            color: aqua;
+        }
+
+        .static {
+            margin-top: 100px;
+        }
+
+        .text-danger {
+            text-decoration-line: line-through;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="static" v-bind:class="{ 'active': isActive,'text-danger': hasError }">Hello</div>
+        <div :class="classObject">Vue</div>
+        <div :class="[activeClass,errorClass]">VUE.js</div>
+        <div :class="[isActive ? activeClass : '', errorClass]">我爱Vue</div>
+        <div :class="[{active: isActive},errorClass]">Vuex</div>
+        <!--看渲染出来的html标签-->
+        <my-component class="baz boo"></my-component>
+        <my-component :class="{ active: isActive }"></my-component>
+
+        <div :style="{ color :activeColor, fontSize: fontSize + 'px'}">绑定内联样式</div>
+        <div :style="styleObject">更清晰</div>
+
+        <div :style="[baseStyles, overridingStyle]">数组描述</div>
+
+        <div :style="{ display: ['-webkit-box','-ms-flexbox','flex']}"></div>
+    </div>
+    <script>
+        Vue.component('my-component',{
+            template: '<p class="foo bar">Hi</p>'
+        })
+        new Vue({
+            el: "#app",
+            data: {
+                isActive: false,
+                hasError: true,
+                // classObject: {
+                //     'active': true,
+                //     'text-danger': false
+                // }
+                activeClass: 'active',
+                errorClass: 'text-danger',
+                activeColor: 'red',
+                fontSize: 30,
+                styleObject: {
+                    color:'green',
+                    fontSize:'13px'
+                },
+                baseStyles: {
+                    color: 'yellow'
+                },
+                overridingStyle:{
+                    fontSize: '50px'
+                } 
+            },
+            computed: {
+                classObject: function () {
+                    //官方文档写的有问题吧，哪来的error
+                    console.log(this.error)//undefined
+                    return {
+                        active: this.isActive && !this.error,
+                        'text-danger': this.error && this.error.type === 'fatal'
+                    }
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>

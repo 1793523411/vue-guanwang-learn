@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        .demo-alert-box {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div is="button-counter"></div>
+        <button-counter></button-counter>
+        <button-counter></button-counter>
+        <blog-post title="My journey with Vue" content="<h2>哈哈哈</hw>"></blog-post>
+        <blog-post title="Blog with Vue"></blog-post>
+        <blog-post title="Why Vue is so fun"></blog-post>
+        <hr>
+        <blog-post
+            v-for="post in post"
+            v-bind:key="post.id"
+            v-bind:title="post.title"
+            :content="post.content"
+        ></blog-post>
+        <!-- @enlarge-text="postFontSize += $event" -->
+        <!-- @enlarge-text="postFontSize += 0.1" -->
+        <div :style="{ fontSize: postFontSize + 'em' }">
+            <blog-post2
+            v-for="post in post"
+            v-bind:key="post.id"
+            v-bind:post="post"
+            @enlarge-text="onEnlargeText"
+        ></blog-post2>
+        </div>
+
+        <input v-model="searchText">
+        <input 
+            v-bind:value="searchText"
+            v-on:input="searchText = $event.target.value"
+        >
+        <!--emit:抛出-->
+        <custom-input
+            v-bind:value="searchText"
+            v-on:input="searchText = $event"
+        ></custom-input>
+
+        <custom-input v-model="searchText"></custom-input>
+        <!--slot:位置，插槽于-->
+        <alert-box>
+            Something bad happened
+        </alert-box>
+    </div>
+    <script>
+        Vue.component('button-counter',{
+            data: function(){
+                return {
+                    count: 0
+                }
+            },
+            template: '<button v-on:click="count++">You have clicked me {{ count }} times</button>'
+        })
+        Vue.component('blog-post',{
+            props: ['title','content'],
+            template: `<div>
+                    <h3>{{ title }}</h3>
+                    <div v-html="content"></div>
+                </div>`
+        })
+        Vue.component('blog-post2',{
+            props: ['post'],
+            template: `<div>
+                    <h3>{{ post.title }}</h3>
+                    <button v-on:click="$emit('enlarge-text',0.1)">
+                        Enlarge text
+                    </button>
+                    <div v-html="post.content"></div>
+                </div>`
+        })
+        Vue.component('custom-input',{
+            props: ['value'],
+            template: `
+                <input
+                    v-bind:value="value"
+                    v-on:input="$emit('input',$event.target.value)"
+                >
+            `
+        })
+        Vue.component('alert-box',{
+            template:`
+            <div class="demo-alert-box">
+                <strong>Error!</strong>
+                <slot></slot>
+            </div>
+            `
+            
+        })
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    post: [
+                        {id: 1, title: 'My journey with Vue',content:'<p>嘻嘻嘻</p>'},
+                        {id: 2, title: 'Blogging with Vue',content:'<p>啦啦啦</p>'},
+                        {id: 3, title: 'Why Vue with Vue',content:'<p>ABCDEFG</p>'},
+                        {id: 4, title: 'Why Vue with Vue~~~~',content:'<p>ABCD!!!EFG</p>'},
+                    ],
+                    postFontSize: 0.5,
+                    searchText:''
+                }
+            },
+            methods: {
+                onEnlargeText: function(enlargeAmount){
+                    this.postFontSize += enlargeAmount
+                }
+            },
+        })
+    </script>
+</body>
+</html>

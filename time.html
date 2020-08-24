@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        new Vue({
+            data: {
+                a: 1
+            },
+            created: function() {
+                console.log(this)
+                console.log('a is ' + this.a)
+            },
+            // create: () => {console.log(this)} //错误做法：什么都没有
+            
+        })
+    </script>
+</body>
+</html>

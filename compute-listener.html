@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+</head>
+
+<body>
+    <div id="example">
+        {{ message.split('').reverse().join('') }}
+        <p>Original message : "{{ message }}"</p>
+        <p>Compute reversed message : "{{ reversedMessage }}"</p>
+        <p>Reverse message : "{{ reversedMessage2() }}"</p>
+        <p>Data Time:{{ now }}</p>
+        <p>fullName : {{ fullName }}</p>
+    </div>
+    <div id="demo">
+        {{ fullName }}
+        <button @click="change('hahaha')">点我改变名字</button>
+    </div>
+    <div id="watch-example">
+        <p>
+            Ask a yes/no question
+            <input v-model="question">
+        </p>
+        <p>{{ answer }}</p>
+        <img :src="img" alt="">
+    </div>
+    <script>
+        var vm = new Vue({
+            el: "#example",
+            data() {
+                return {
+                    message: "Hello !!!",
+                    firstName: 'Foo',
+                    lastName: 'Bar',
+                    fullName: 'Foo Bar'
+                }
+            },
+            methods: {
+                reversedMessage2: function () {
+                    return this.message.split('').reverse().join('')
+                }
+            },
+            computed: {
+                reversedMessage: function () {
+                    return this.message.split('').reverse().join('')
+                },
+                now: function () {
+                    return Date.now()
+                },
+                fullName: {
+                    get: function () {
+                        return this.firstName + '' + this.lastName
+                    },
+                    set: function (newValue) {
+                        var names = newValue.split(' ')
+                        this.firstName = names[0]
+                        this.lastName = names[names.length - 1]
+                    }
+                }
+            },
+        })
+        console.log(vm.reversedMessage)
+        vm.message = 'Goodbye'
+        console.log(vm.reversedMessage)
+        vm.fullName = 'John Doe'
+
+
+        new Vue({
+            el: "#demo",
+            data: {
+                firstName: 'Foo',
+                lastName: 'Bar',
+                fullName: 'Foo Bar'
+            },
+            methods: {
+                change: function (name) {
+                    this.firstName = name
+                }
+            },
+            watch: {
+                firstName: function (val) {
+                    this.fullName = val + ' ' + this.lastName
+                },
+                lastName: function (val) {
+                    this.fullName = this.firstName + '' + val
+                }
+            },
+        })
+
+        var watchExampleVM = new Vue({
+            el: "#watch-example",
+            data: {
+                question: '',
+                img: "",
+                answer: 'I connot give you an answer until you ask a question!'
+            },
+            watch: {
+                question: function (newQuestion, oldQuestion) {
+                    this.answer = 'Waiting for you to stop typing.....'
+                    console.log(newQuestion + "-----" + oldQuestion)
+                    this.debounceGetAnswer()
+                }
+            },
+            created: function () {
+                // _.debounce` 是一个通过 Lodash 限制操作频率的函数。
+                this.debounceGetAnswer = _.debounce(this.getAnswer, 500)
+            },
+            methods: {
+                getAnswer: function () {
+                    if (this.question.indexOf('?') === -1) {
+                        this.answer = 'Question usually contain a question mark. ;~)'
+                        return
+                    }
+                    this.answer = 'Thinking...'
+                    var vm = this
+                    axios.get('https://yesno.wtf/api')
+                        .then(function (response) {
+                            console.log(response)
+                            vm.answer = _.capitalize(response.data.answer)
+                            vm.img = _.capitalize(response.data.image)
+                        })
+                        .catch(function (error) {
+                            vm.answer = 'Error! Could not reach the API.' + error
+                        })
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

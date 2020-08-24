@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/animate.css@3.5.1" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <button v-on:click="show = !show">
+            Toggle
+        </button>
+        <transition name="fade" mode="out-in">
+            <p v-if="show">hello</p>
+            <p v-if="!show">Word</p>
+        </transition>
+        <br>
+        <button v-on:click="show = !show">
+            Toggle render
+        </button>
+        <transition name="slide-fade" mode="out-in">
+            <p v-if="show">hello</p>
+            <p v-if="!show">Word</p>
+        </transition>
+        <br>
+        <!-- <button @click="show = !show">Toggle show</button>
+        <transition name="bounce">
+            <p v-if="show">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris facilisis enim libero, at
+                lacinia diam fermentum id. Pellentesque habitant morbi tristique senectus et netus.</p>
+        </transition> -->
+        <br>
+        <!-- <button @click="show = !show">
+            Toggle render
+        </button>
+        <transition name="custom-classes-transition" enter-active-class="animated tada"
+            leave-active-class="animated bounceOutRight">
+            <p v-if="show">hello</p>
+        </transition>
+        <transition name="custome-classes" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
+        <p v-if="show">HHHHHHHHHHH</p>
+        </transition> -->
+        <br>
+        <!-- <button @click="show = !show">Toggle show</button>
+        <transition :duration="1000">
+            <p v-if="show">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris facilisis enim libero, at
+                lacinia diam fermentum id. Pellentesque habitant morbi tristique senectus et netus.</p>
+        </transition>
+        <br> -->
+        <!-- <button @click="show = !show">Toggle show</button>
+          <transition :duration="{ enter: 5000, leave: 3000 }">
+            <p v-if="show">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris facilisis enim libero, at
+                lacinia diam fermentum id. Pellentesque habitant morbi tristique senectus et netus.</p>
+        </transition> -->
+        <br>
+        <!-- <button @click="show = !show">Toggle show</button>
+        <transition v-on:before-enter="berforeEnter" v-on:enter="enter" v-on:after-enter="afterEnter"
+            v-on:enter-cancelled="enterCancelled" v-on:before-leave="beforeLeave" v-on:leave="afterLeave"
+            v-on:leave-cancelled="leaveCanlled">
+            <p v-if="show">lacinia diam fermentum id. Pellentesque habitant morbi tristique senectus et netus.</p>
+        </transition> -->
+        <br>
+        <button @click="show = !show">
+            Toggle
+        </button>
+        <transition v-on:before-enter="beforeEnter" v-on:enter="enter" v-on:leave="leave" v-bind:css="false">
+            <p v-if="show">
+                Demo
+            </p>
+        </transition>
+    </div>
+    <script>
+        new Vue({
+            el: "#app",
+            data() {
+                return {
+                    show: true
+                }
+            },
+            methods: {
+                // --------
+                // 进入中
+                // --------
+
+                berforeEnter: function (el) {
+                    // ...
+                },
+                beforeEnter: function (el) {
+                    // ...
+                    el.style.opacity = 0
+                    el.style.transformOrigin = 'left'
+                },
+                // 当与 CSS 结合使用时
+                // 回调函数 done 是可选的
+                enter: function (el, done) {
+                    // ...
+                    Velocity(el, { opacity: 1, fontSize: '1.4em' }, { duration: 300 })
+                    Velocity(el, { fontSize: '1em' }, { complete: done })
+                    done()
+                },
+                afterEnter: function (el) {
+                    // ...
+                },
+                enterCancelled: function (el) {
+                    // ...
+                },
+
+                // --------
+                // 离开时
+                // --------
+
+                beforeLeave: function (el) {
+                    // ...
+                },
+                // 当与 CSS 结合使用时
+                // 回调函数 done 是可选的
+                leave: function (el, done) {
+                    // ...
+                    Velocity(el, { translateX: '15px', rotateZ: '50deg' }, { duration: 600 })
+                    Velocity(el, { rotateZ: '100deg' }, { loop: 2 })
+                    Velocity(el, {
+                        rotateZ: '45deg',
+                        translateY: '30px',
+                        translateX: '30px',
+                        opacity: 0
+                    }, { complete: done })
+                    // done()
+                },
+                afterLeave: function (el) {
+                    // ...
+                },
+                // leaveCancelled 只用于 v-show 中
+                leaveCanlled: function (el) {
+                    // ...
+                }
+            }
+        })
+    </script>
+    <style>
+        .fade-enter-active,
+        .fade-leave-active {
+            transition: opacity .5s;
+        }
+
+        .fade-enter,
+        .fade-leave-to {
+            opacity: 0;
+        }
+
+        .slide-fade-enter-active {
+            transition: all .3s ease;
+        }
+
+        .slide-fade-leave-active {
+            transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+        }
+
+        .slide-fade-enter,
+        .slide-fade-leave-to {
+            transform: translateX(10px);
+            opacity: 0;
+        }
+
+        .bounce-enter-active {
+            animation: bounce-in .5s;
+        }
+
+        .bounce-leave-active {
+            animation: bounce-in .5s reverse;
+        }
+
+        @keyframes bounce-in {
+            0% {
+                transform: scale(0);
+            }
+
+            50% {
+                transform: scale(1.5);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</body>
+
+</html>

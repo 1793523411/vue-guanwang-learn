@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <Component_a></Component_a>
+    </div>
+    <script>
+        var ComponentA = {
+            name: "ComponentA",
+            template:`<div>Hello!</div>`
+        }
+        var ComponentB = {
+            comments: {
+                'component-a': ComponentA
+            }
+        }
+        var ComponentC = {}
+        var vm = new Vue({
+            el: "#app",
+            data: {
+
+            },
+            components: {
+                Component_a: ComponentA,
+                'Component-b': ComponentB,
+                'Component-c': ComponentB,
+            }
+        })
+    </script>
+</body>
+
+</html>

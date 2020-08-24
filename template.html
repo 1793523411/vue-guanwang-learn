@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <span v-once>message : {{message}}</span>
+        <button v-on:click="message = 'Vue'">测试v-once</button>
+        <span style="color: aqua;">Helo</span>
+        <p>{{ rawHtml }}</p>
+        <!--预防Xss攻击-->
+        <p><span v-html="rawHtml"></span></p>
+        <br>
+        <!-- Mustache 语法不能作用在 HTML attribute 上，遇到这种情况应该使用 v-bind 指令 -->
+        <div v-bind:id="dynamicId">Hello!!!!</div>
+        <!-- <div id="dynamicId">Hello!!!!</div> -->
+        <button v-bind:disabled="isButtonDisabled">Button</button>
+
+        <br>
+
+        <p>{{ count + 10}}</p>
+        <p>{{ isButtonDisabled ? message : 'no' }}</p>
+        <p>{{ rawHtml.split('').reverse().join('') }}</p>
+        <div v-bind:id="'list-' + dynamicId">{{ 'list-' + dynamicId }}</div>
+        <!-- <p>{{ var a = 1}}</p>这是语句，不是表达式 -->
+
+        <br>
+        <a v-bind:href="vue_img">bind链接</a><br>
+        <a :href="vue_img">bind2链接</a><br>
+        <a v-on:click="dosome">点击dosom</a><br>
+        <a @click="dosome">点击dosom2</a><br>
+        <!-- <img src="https://cn.vuejs.org/images/logo.png" alt=""> -->
+        <a v-bind:[attributeName]='url'>vue-logo</a><br>
+        <a :[attributeName]="url">vue-logo2</a><br>
+        
+        <a v-on:[eventName]="dosome">eventName---dosome</a>
+        <a @:[eventName]="dosome">eventName---dosome2</a>
+        <br>
+        <form v-on:submit.prevent="onSubmit" action="https://baidu.com">
+            <input type="date" name="" id="">
+            <input type="checkbox" name="" id="">
+            <input type="button" value="Button">
+        </form>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                attributeName: "href",
+                eventName:"click",
+                message: 'helo',
+                rawHtml: '<span style="color: aqua;">Hello</span>',
+                dynamicId: "Hello",
+                isButtonDisabled: true,
+                count: 0,
+                url: "https://1793523411.github.io",
+                vue_img: "https://cn.vuejs.org/images/logo.png"
+
+            },
+            methods: {
+                dosome: function () {
+                    alert("v-bind:onlick")
+                }
+            },
+            created: function () {
+                console.log(this)
+                // console.log(document.getElementById("Hello"))
+                new Vue({
+                    el: '#Hello',
+                    data: {},
+                    created: function () {
+                        console.log(this)
+                    }
+                })
+            }
+        })
+    </script>
+</body>
+
+</html>

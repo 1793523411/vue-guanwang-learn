@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app0">
+
+    </div>
+    <div id="app">
+        <!-- <component2></component2> -->
+    </div>
+    <script>
+        var myMixin = {
+            created() {
+                this.hello()
+            },
+            methods: {
+                hello: function () {
+                    console.log('Hello from mixin')
+                }
+            },
+        }
+        var Component = Vue.extend({
+            mixin: [myMixin],
+            template: `<hr>`
+        })
+
+        var component2 = new Component().$mount()
+        document.body.appendChild(component2.$el)
+        var mixin = {
+            data: function () {
+                return {
+                    message: 'hello',
+                    foo: 'abc'
+                }
+            },
+            created: function () {
+                console.log('混入对象的钩子被调用')
+            }
+        }
+
+        Vue.mixin({
+            created: function () {
+                var myOption = this.$options.myOption
+                if (myOption) {
+                    console.log(myOption)
+                }
+            }
+        })
+        Vue.config.optionMergeStrategies.myOption = function (toVal, fromVal) {
+            // 返回合并后的值
+            return 'World~~~' + toVal + fromVal
+        }
+        var strategies = Vue.config.optionMergeStrategies
+        strategies.myOption2 = strategies.methods
+        var vm = new Vue({
+            el: "#app",
+            myOption: 'Hello~~~~~~~~~~~',
+            myOption2:{
+
+            },
+            mixins: [mixin],
+            data: function () {
+                return {
+                    message: 'goodbye',
+                    bar: 'def'
+                }
+            },
+            created: function () {
+                console.log(this.$data)
+                console.log('组件钩子被调用')
+                // => { message: "goodbye", foo: "abc", bar: "def" }
+            }
+            // components:{
+            //     component2
+            // }
+        })
+
+        //------------------------------------------
+        var mixin0 = {
+            data() {
+                return {
+                    msg_mixins: 'mixins',
+                    msg: '123'
+                }
+            },
+            created: function () {
+                console.log('混入对象的钩子被调用')
+            },
+            methods: {
+                foo: function () {
+                    console.log('foo')
+                },
+                conflicting: function () {
+                    console.log('from mixin')
+                }
+            }
+        }
+        Vue.mixin({
+            created: function () {
+                console.log('全局混入')
+            }
+        })
+
+        // var app0 = new Vue({
+        //     mixins: [mixin0],
+        //     el: '#app0',
+        //     data: {
+        //         msg: 'app'
+        //     },
+        //     created: function () {
+        //         console.log('组件钩子被调用')
+        //     },
+        //     methods: {
+        //         bar: function () {
+        //             console.log('bar')
+        //         },
+        //         conflicting: function () {
+        //             console.log('from self')
+        //         }
+        //     }
+        // })
+    </script>
+</body>
+
+</html>

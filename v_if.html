@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1 v-if="awesome">Vue is awesome</h1>
+        <h1 v-else>Oh no !!!</h1>
+        <template v-if="ok">
+            <h1>Title</h1>
+            <p>Prargraph 1</p>
+            <p>Prargraph 2</p>
+        </template>
+        <div v-if="Math.random()>0.5">Now you see me</div>
+        <div v-else>Now you don`t</div>
+
+        <div v-if="type === 'A'">A</div>
+        <div v-else-if="type === 'B'">B</div>
+        <div v-else-if="type === 'C'">C</div>
+        <div v-else>D</div>
+
+
+        <template v-if="loginType === 'username'">
+            <label>UserName</label>    
+            <input placeholder="Enter your username">
+        </template>
+        <template v-else>
+            <label>Email</label>
+            <input placeholder="Enter your email address">    
+        </template>
+        <button @click="toggle_type">toggle</button>
+
+        <template v-if="loginType === 'username'">
+            <label>UserName</label>    
+            <input placeholder="Enter your username" key="username-input">
+        </template>
+        <template v-else>
+            <label>Email</label>
+            <input placeholder="Enter your email address" key="email-input">    
+        </template>
+        <button @click="toggle_type">toggle</button>
+
+        <!--切换css的display属性，会保留在Dom中，且总是被渲染-->
+        <h1 v-show="ok">Hello!!</h1>
+
+        <!-- 官网原话：不推荐同时使用 v-if 和 v-for -->
+    </div>
+    <script>
+        new Vue({
+            el:"#app",
+            data: {
+                awesome: false,
+                ok:true,
+                type:'C',
+                loginType:'username'
+            },
+            methods: {
+                toggle_type: function(){
+                    this.loginType = ''
+                }
+            },
+        })
+    </script>
+</body>
+</html>

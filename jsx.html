@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <a href="#hello-world3">跳转到hello-world3</a>
+    <div id="app">
+        <anchored-heading :level="1">Hello world1!</anchored-heading>
+        <anchored-heading :level="2">Hello world2!</anchored-heading>
+        <demo></demo>
+        <demo2 :items='[{name:"ygj"},{name:"dasdas"},{name:"dasfafs"}]'></demo2>
+        <demo3 :value='value'></demo3>{{value}}
+        <demo2 :items='items'></demo2>
+        <div style="width: 100px;height: 1000px;border: 1px solid #000;"></div>
+        <anchored-heading :level="3">Hello world3!</anchored-heading>
+        <anchored-heading :level="4">Hello world4!</anchored-heading>
+        <anchored-heading :level="5">Hello world5!</anchored-heading>
+        <anchored-heading :level="6">Hello world6!</anchored-heading>
+    </div>
+    <script type="text/x-template" id="anchored-heading-template">
+        <h1 v-if="level === 1">
+          <slot></slot>
+        </h1>
+        <h2 v-else-if="level === 2">
+          <slot></slot>
+        </h2>
+        <h3 v-else-if="level === 3">
+          <slot></slot>
+        </h3>
+        <h4 v-else-if="level === 4">
+          <slot></slot>
+        </h4>
+        <h5 v-else-if="level === 5">
+          <slot></slot>
+        </h5>
+        <h6 v-else-if="level === 6">
+          <slot></slot>
+        </h6>
+      </script>
+    <script>
+        // Vue.component('anchored-heading', {
+        //     template: '#anchored-heading-template',
+        //     props: {
+        //         level: {
+        //             type: Number,
+        //             required: true
+        //         }
+        //     }
+        // })
+        // Vue.component('anchored-heading', {
+        //     render: function (createElement) {
+        //         return createElement(
+        //             'h' + this.level,
+        //             this.$slots.default
+        //         )
+        //     },
+        //     props: {
+        //         level: {
+        //             type: Number,
+        //             required: true
+        //         }
+        //     }
+        // })
+        var getChildrenTextContent = function (children) {
+            console.log(children)
+            console.log(children.map(function (node) {
+                return node.children ? getChildrenTextContent(node.children) : node.text
+            }).join(''))
+            return children.map(function (node) {
+                return node.children ? getChildrenTextContent(node.children) : node.text
+            }).join('')
+        }
+        Vue.component('anchored-heading', {
+            render: function (createElement) {
+                var headingId = getChildrenTextContent(this.$slots.default)
+                    .toLowerCase()
+                    .replace(/\W+/g, '-')
+                    .replace(/(^-|-$)/g, '')
+
+                return createElement(
+                    'h' + this.level,
+                    [
+                        createElement('a', {
+                            attrs: {
+                                name: headingId,
+                                herf: '#' + headingId
+                            }
+                        }, this.$slots.default)
+                    ]
+                )
+            },
+            props: {
+                level: {
+                    type: Number,
+                    required: true
+                }
+            }
+        })
+        Vue.component('demo', {
+            render: function (createElement) {
+                return createElement('div',
+                    Array.apply(null, { length: 20 }).map(function () {
+                        return createElement('p', 'hahaha')
+                    }))
+            }
+        })
+        Vue.component('demo2', {
+            props: ['items'],
+            render: function (createElement) {
+                if (this.items.length) {
+                    return createElement('ul', this.items.map(function (item) {
+                        return createElement('li', item.name)
+                    }))
+                } else {
+                    return createElement('p', 'No items found')
+                }
+            }
+        })
+        Vue.component('demo3', {
+            props: ['value'],
+            render: function (createElement) {
+                var self = this
+                return createElement('input', {
+                    domProps: {
+                        value: self.value
+                    },
+                    on: {
+                        input: function (event) {
+                            self.$emit('input', event.target.value)
+                        }
+                    }
+                })
+            }
+        })
+        new Vue({
+            el: "#app",
+            data() {
+                return {
+                    items: [
+                        { name: 'ygj~~~' },
+                        { name: 'ygj~~~123' },
+                        { name: 'ygj~~~3214' },
+                        { name: 'ygj~~~3214' },
+                    ],
+                    value: 'input'
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>
